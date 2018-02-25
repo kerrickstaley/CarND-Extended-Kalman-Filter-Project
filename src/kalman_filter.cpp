@@ -1,3 +1,4 @@
+#include <cmath>
 #include "kalman_filter.h"
 
 using Eigen::MatrixXd;
@@ -46,6 +47,10 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     (vx * px + vy * py) / rho;
 
   VectorXd y = z - z_pred;
+  // normalize gamma component of y to be between -pi and pi
+  // C++ modulo sign rule is that sign always matches the left operand, which makes this more complicated :(
+  y[1] = (y[1] % (2 * M_PI) + 3 * M_PI) % (2 * M_PI) - M_PI;
+
   UpdateInner(y);
 }
 
