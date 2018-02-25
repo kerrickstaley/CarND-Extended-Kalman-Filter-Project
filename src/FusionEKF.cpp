@@ -86,13 +86,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   long long dt2 = dt * dt;
   long long dt3 = dt2 * dt;
   long long dt4 = dt3 * dt;
-  /**
-   TODO:
-     * Update the state transition matrix F according to the new elapsed time.
-      - Time is measured in seconds.
-     * Update the process noise covariance matrix.
-     * Use noise_ax = 9 and noise_ay = 9 for your Q matrix.
-   */
+
   ekf_.F_ <<
     1, 0, dt,  0,
     0, 1,  0, dt,
@@ -130,15 +124,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    *  Update
    ****************************************************************************/
 
-  /**
-   TODO:
-     * Use the sensor type to perform the update step.
-     * Update the state and covariance matrices.
-   */
-
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-    // Radar updates
+    // TODO
   } else {
+    // TODO
     // Laser updates
   }
 

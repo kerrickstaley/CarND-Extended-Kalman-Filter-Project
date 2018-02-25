@@ -26,15 +26,33 @@ void KalmanFilter::Predict() {
 }
 
 void KalmanFilter::Update(const VectorXd &z) {
-  /**
-  TODO:
-    * update the state by using Kalman Filter equations
-  */
+  VectorXd y = z - H_ * x_;
+  UpdateInner(y);
 }
 
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
-  /**
-  TODO:
-    * update the state by using Extended Kalman Filter equations
-  */
+  // assumes that the measurement function is the polar rho/gamma/rho_dot function used for radar
+  VectorXd z_pred(3);
+  double px = x_[0];
+  double py = x_[1];
+  double vx = x_[2];
+  double vy = x_[3];
+
+  double rho = sqrt(px * px + py * py);
+
+  z_pred <<
+    rho,
+    atan2(py, px),
+    (vx * px + vy * py) / rho;
+
+  VectorXd y = z - z_pred;
+  UpdateInner(y);
+}
+
+void KalmanFilter::UpdateInner(const VectorXd &y) {
+  MatrixXd S = H_ * P_ * H_.transpose() + R_;
+  MatrixXd K = P_ * H_.transpose() * S.inverse();
+
+  x_ = x_ + K * y;
+  P_ = (MatrixXd::Identity(K.rows(), K.rows()) - K * H_) * P_;
 }
