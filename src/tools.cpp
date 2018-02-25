@@ -40,8 +40,41 @@ VectorXd Tools::CalculateRMSE(const vector<VectorXd> &estimations,
 }
 
 MatrixXd Tools::CalculateJacobian(const VectorXd& x_state) {
-  /**
-  TODO:
-    * Calculate a Jacobian here.
-  */
+  // calculates the Jacobian used in the Kalman filter measurement update for radar measurements
+  // the Jacobian H is the partial derivative of each component of the measurement z = (rho, gamma, rho_dot) with
+  // respect to the state x = (p_x, p_y, v_x, v_y), such that dz / dx = Hx (where z and x are column vectors)
+  // Hence, H has 3 rows (one for each element of z) and 4 columns (one for each element of x)
+  MatrixXd H(3, 4);
+
+  double px = x_state[0];
+  double py = x_state[1];
+  double vx = x_state[2];
+  double vy = x_state[3];
+
+  double px2_py2 = px * px + py * py;
+  double px2_py2_12 = sqrt(px2_py2);
+  double px2_py2_32 = px2_py2 * px2_py2_12;
+
+  H <<
+      // row 1, partial derivative of rho with respect to x
+      // rho = sqrt(p_x^2 + p_y^2)
+      px / px2_py2_12,
+      py / px2_py2_12,
+      0,
+      0,
+      // row 2, partial derivative of gamma with respect to x
+      // gamma = atan(py / px)
+      // note: d/dx atan(x) = 1 / (1 + x^2)
+      - py / px2_py2,
+      px / px2_py2,
+      0,
+      0,
+      // row 3, partial derivative of rho_dot with respect to x
+      // rho_dot = v . p / abs(v) = (vx * px + vy * py) / sqrt(px^2 + py^2)
+      py * (vx * py - vy * px) / px2_py2_32,
+      px * (vy * px - vx * py) / px2_py2_32,
+      px / px2_py2_12,
+      py / px2_py2_12;
+
+  return H;
 }

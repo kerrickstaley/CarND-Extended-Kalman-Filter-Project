@@ -35,6 +35,24 @@ TEST(CalculateRMSETest, Case1) {
 }
 
 
+TEST(CalculateJacobianTest, Case1) {
+  VectorXd x(4);
+  x << 1, 2, 0.2, 0.4;
+
+  MatrixXd Hexpected(3, 4);
+  Hexpected <<
+      0.447214, 0.894427,        0,        0,
+          -0.4,      0.2,        0,        0,
+             0,        0, 0.447214, 0.894427;
+
+  Tools t;
+  MatrixXd Hactual = t.CalculateJacobian(x);
+  double maxDiff = (Hexpected - Hactual).array().abs().maxCoeff();
+
+  EXPECT_LT(maxDiff, 1e-6);
+}
+
+
 int main(int argc, char **argv) {
   ::testing::InitGoogleTest(&argc, argv);
   return RUN_ALL_TESTS();
