@@ -39,6 +39,7 @@ FusionEKF::FusionEKF() {
 
   // process covariance matrix
   // TODO: not sure what this should actually be
+  ekf_.P_ = MatrixXd(4, 4);
   ekf_.P_ <<
       1e9,   0,   0,   0,
         0, 1e9,   0,   0,
