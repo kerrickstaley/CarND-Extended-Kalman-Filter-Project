@@ -61,7 +61,7 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
     ekf_.x_ = VectorXd(4);
 
     if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
-      double rho = measurement_pack.raw_measurements_[0]
+      double rho = measurement_pack.raw_measurements_[0];
       double gamma = measurement_pack.raw_measurements_[1];
       double rho_dot = measurement_pack.raw_measurements_[2];
       ekf_.x_ <<
@@ -132,11 +132,11 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   if (measurement_pack.sensor_type_ == MeasurementPackage::RADAR) {
     ekf_.R_ = R_radar_;
     ekf_.H_ = H_laser_;
-    ekf_.Update();
+    ekf_.Update(measurement_pack.raw_measurements_);
   } else {
     ekf_.R_ = R_laser_;
     ekf_.H_ = tools.CalculateJacobian(ekf_.x_);
-    ekf_.UpdateEKF();
+    ekf_.UpdateEKF(measurement_pack.raw_measurements_);
   }
 
   // print the output
