@@ -85,10 +85,10 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
    *  Prediction
    ****************************************************************************/
 
-  long long dt = measurement_pack.timestamp_ - previous_timestamp_;
-  long long dt2 = dt * dt;
-  long long dt3 = dt2 * dt;
-  long long dt4 = dt3 * dt;
+  double dt = (measurement_pack.timestamp_ - previous_timestamp_) / 1e6;
+  double dt2 = dt * dt;
+  double dt3 = dt2 * dt;
+  double dt4 = dt3 * dt;
 
   ekf_.F_ <<
     1, 0, dt,  0,
