@@ -60,5 +60,5 @@ void KalmanFilter::UpdateInner(const VectorXd &y) {
   MatrixXd K = P_ * H_.transpose() * S.inverse();
 
   x_ = x_ + K * y;
-  P_ = (MatrixXd::Identity(K.rows(), K.rows()) - K * H_) * P_;
+  P_ -= K * H_ * P_;
 }
