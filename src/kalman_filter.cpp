@@ -39,12 +39,16 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   double vx = x_[2];
   double vy = x_[3];
 
-  double rho = sqrt(px * px + py * py);
+  if (px == 0 && py == 0) {
+    z_pred << 0, 0, 0;
+  } else {
+    double rho = sqrt(px * px + py * py);
 
-  z_pred <<
-    rho,
-    atan2(py, px),
-    (vx * px + vy * py) / rho;
+    z_pred <<
+      rho,
+      atan2(py, px),
+      (vx * px + vy * py) / rho;
+  }
 
   VectorXd y = z - z_pred;
   // normalize gamma component of y to be between -pi and pi
