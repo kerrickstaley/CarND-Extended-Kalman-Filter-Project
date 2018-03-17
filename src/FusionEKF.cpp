@@ -90,6 +90,8 @@ void FusionEKF::ProcessMeasurement(const MeasurementPackage &measurement_pack) {
   double dt3 = dt2 * dt;
   double dt4 = dt3 * dt;
 
+  previous_timestamp_ = measurement_pack.timestamp_;
+
   ekf_.F_ <<
     1, 0, dt,  0,
     0, 1,  0, dt,
